@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card w-50 mx-auto">
+    <div class="card-header">
+      <h4 class="card-title">Manage Users</h4>
+    </div>
+    <div class="card-body">
+	    <p><a href="{{ url_for('auth.register') }}">Add User</a></p>
+            <table id="tblku" class="table table-bordered table-hover">
+                <tr>
+                    <td>Username</td>
+                    <td>Is Superadmin</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+		    <td>{% if u.is_superadmin == True %}Yes{% else %}No{% endif %}</td>
+                    <td><a href="#">Edit</a></td>
+                    <td><a href="#">Hapus</a></td>
+                </tr>
+                {% endfor %}
+	    </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

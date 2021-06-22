@@ -8,15 +8,14 @@ from .forms import LoginForm, RegistrationForm
 auth_blueprint = Blueprint('auth', __name__)
 
 
-@auth_blueprint.route('/register', methods=['GET', 'POST'])
+@auth_blueprint.route('/users/add', methods=['GET', 'POST'])
+@login_required
 def register():
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        user = User(username=form.username.data, is_superadmin=form.is_superadmin.data, password=form.password.data)
         user.save()
-        login_user(user)
-        flash('Registration successful. You are logged in.', 'success')
-        return redirect(url_for("main.index"))
+        return redirect(url_for("auth.list_users"))
     elif form.is_submitted():
         flash('The given data was invalid.', 'danger')
     return render_template('auth/register.html', form=form)
@@ -41,3 +40,9 @@ def logout():
     logout_user()
     flash('You were logged out.', 'info')
     return redirect(url_for('main.index'))
+
+@auth_blueprint.route('/users')
+@login_required
+def list_users():
+    l_user = User.query.all()
+    return render_template('auth/manage.html', users=l_user)
