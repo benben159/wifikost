@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card w-50 mx-auto">
+    <div class="card-header">
+      <h4 class="card-title">Register</h4>
+    </div>
+    <div class="card-body">
+      <form class="form" role="form" action="{{ url_for('sitekost.edit_site', site_id=site_id) }}" method="post">
+        <div class="form-group">
+          {{form.location_id.label}}
+          {{form.location_id(class='form-control')}}
+          {% for error in form.errors.location_id %}
+          <small class="text-danger">{{error}}</small>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{form.user_id.label}}
+          {{form.user_id(class='form-control')}}
+          {% for error in form.errors.email %}
+          <small class="text-danger">{{error}}</small>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{form.nas_ipaddress.label}}
+          {{form.nas_ipaddress(class='form-control')}}
+          {% for error in form.errors.nas_ipaddress %}
+          <small class="text-danger">{{error}}</small>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{form.nas_secret.label}}
+          {{form.nas_secret(class='form-control')}}
+          {% for error in form.errors.nas_secret %}
+          <small class="text-danger">{{error}}</small>
+          {% endfor %}
+        </div>
+        {{form.submit(class='btn btn-primary')}}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

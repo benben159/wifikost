@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card w-50 mx-auto">
+    <div class="card-header">
+      <h4 class="card-title">Manage Paket Inets</h4>
+    </div>
+    <div class="card-body">
+	    <p><a href="{{ url_for('sitekost.add_paketinet') }}">Add Paket Inet</a></p>
+            <table id="tblku" class="table table-bordered table-hover">
+                <tr>
+                    <td>Name</td>
+		    <td>Bandwidth (Mbps)</td>
+		    <td>Simultaneous Devices</td>
+		    <td>Autorenew (days)</td>
+                    <td colspan="2">Action</td>
+                </tr>
+                {% for s in pakets %}
+                <tr>
+                    <td>{{ s.name }}</td>
+		    <td>{{ s.bw_mbps}}</td>
+		    <td>{{ s.num_devices }}</td>
+		    <td>{{ s.renewal_days }}</td>
+		    <td><a href="{{ url_for('sitekost.edit_site',site_id=s.id) }}">Edit</a></td>
+		    <td><a href="{{ url_for('sitekost.toggle_site',site_id=s.id) }}">{% if s.is_active == True %}Disable Site{% else %}Enable Site{% endif %}</a></td>
+                </tr>
+                {% endfor %}
+	    </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
