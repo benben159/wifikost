@@ -22,6 +22,7 @@ class DevelopmentConfig(BaseConfig):
     """Development configuration."""
 
     DEBUG = True
+    DEBUG_TB_ENABLED = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DEVEL_DATABASE_URL', 'sqlite:///' + os.path.join(base_dir, 'database-devel.sqlite3'))
 
