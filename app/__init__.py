@@ -15,6 +15,7 @@ def create_app(environment='development'):
     from config import config
     from .views import main_blueprint
     from .auth.views import auth_blueprint
+    from .sitekost.views import sitekost_blueprint
     from .auth.models import User, AnonymousUser
 
     # Instantiate app.
@@ -32,6 +33,7 @@ def create_app(environment='development'):
     # Register blueprints.
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(main_blueprint)
+    app.register_blueprint(sitekost_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader
