@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, url_for, redirect, flash, request,
 from flask_login import login_user, logout_user, login_required
 
 from .. import db
-from .models import SiteKost, PaketInternet
+from .models import SiteKost, PaketInternet, WifiUser
 from ..auth.models import User
 from .forms import SiteKostForm, PaketInternetForm, SiteKostEditForm, PaketInternetEditForm
 
@@ -72,3 +72,49 @@ def list_pakets():
     pak = PaketInternet.query.all()
     return render_template('paketinet/manage.html', pakets=pak)
 
+@sitekost_blueprint.route('/pakets/add', methods=['GET', 'POST'])
+@login_required
+def add_paketinet():
+    if (session['is_superadmin'] != True):
+        abort(403)
+    form = PaketInternetForm(request.form)
+    if form.validate_on_submit():
+        pak = PaketInternet(name=form.name.data, bw_mbps=form.bw_mbps.data, num_devices = form.num_devices.data, renewal_days=form.renewal_days.data)
+        pak.save()
+        return redirect(url_for('sitekost.list_pakets'))
+    elif form.is_submitted():
+        flash('The given data was invalid.', 'danger')
+    return render_template('paketinet/create.html', form=form)
+
+@sitekost_blueprint.route('/pakets/edit/<int:pak_id>', methods=['GET', 'POST'])
+@login_required
+def edit_paketinet(pak_id):
+    if (session['is_superadmin'] != True):
+        abort(403)
+    pak = PaketInternet.query.filter_by(id=pak_id).first()
+    form = PaketInternetEditForm(obj=pak)
+    if form.validate_on_submit():
+        pak.bw_mbps = form.bw_mbps.data
+        pak.num_devices = form.num_devices.data
+        pak.renewal_days = form.renewal_days.data
+        pak.save()
+        return redirect(url_for('sitekost.list_pakets'))
+    elif form.is_submitted():
+        flash('The given data was invalid.', 'danger')
+    return render_template('paketinet/edit.html', form=form, pak_id=pak.id)
+
+@sitekost_blueprint.route('/pakets/toggle/<int:pak_id>', methods=['GET', 'POST'])
+@login_required
+def toggle_paketinet(pak_id):
+    if (session['is_superadmin'] != True):
+        abort(403)
+    pak = PaketInternet.query.filter_by(id=pak_id).first()
+    pak.is_active = not pak.is_active
+    pak.save()
+    return redirect(url_for('sitekost.list_pakets'))
+
+@sitekost_blueprint.route('/hslogins')
+@login_required
+def list_hslogins():
+    wus = WifiUser.query.all()
+    return render_template('wifiuser/manage.html', user=wus)

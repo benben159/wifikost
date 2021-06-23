@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, ValidationError, SelectField, IntegerField
 from wtforms.validators import DataRequired, IPAddress, Optional, Length
 
-from .models import SiteKost, PaketInternet
+from .models import SiteKost, PaketInternet, WifiUser
 
 class SiteKostForm(FlaskForm):
     location_id = StringField('RADIUS Location ID', [DataRequired()])
@@ -32,8 +32,9 @@ class SiteKostEditForm(FlaskForm):
 
 class PaketInternetForm(FlaskForm):
     name = StringField('Nama Paket', [DataRequired()])
-    bw_mbytes = IntegerField('Max Bandwidth', [DataRequired()])
-    num_devices = IntegerField('Max Bandwidth', [DataRequired()])
+    bw_mbps = IntegerField('Bandwidth (Mbps)', [DataRequired()])
+    num_devices = IntegerField('Simultaneous Devices', [DataRequired()])
+    renewal_days = IntegerField('Autorenew (days)', [DataRequired()])
     submit = SubmitField('Simpan Paket inet')
 
     def validate_name(form, field):
@@ -41,11 +42,26 @@ class PaketInternetForm(FlaskForm):
             raise ValidationError('This paket name is already exists')
 
 class PaketInternetEditForm(FlaskForm):
-    name = StringField('Nama Paket', [DataRequired()])
-    bw_mbytes = IntegerField('Max Bandwidth', [DataRequired()])
-    num_devices = IntegerField('Max Bandwidth', [DataRequired()])
+    name = StringField('Nama Paket',  render_kw={'readonly':True})
+    bw_mbps = IntegerField('Bandwidth (Mbps)', [DataRequired()])
+    num_devices = IntegerField('Simultaneous Devices', [DataRequired()])
+    renewal_days = IntegerField('Autorenew (days)', [DataRequired()])
     submit = SubmitField('Simpan Paket inet')
 
-    def validate_name(form, field):
-        if PaketInternet.query.filter_by(name=field.data).first() is not None:
-            raise ValidationError('This paket name is already exists')
+class WifiUserForm(FlaskForm):
+    username = StringField('Username', [DataRequired()])
+    plain_password = StringField('Password', [DataRequired(), Length(min=6,max=16)])
+    group_id = SelectField('Paket Internet', [DataRequired()], coerce=int)
+    site_id = SelectField('Admin User', [DataRequired()], coerce=int)
+    is_autorenew = BooleanField('Autorenew this username')
+
+    def validate_username(form, field):
+        if WifiUser.query.filter_by(username=field.data).first() is not None:
+            raise ValidationError('This username is already exists')
+
+class WifiUserEditForm(FlaskForm):
+    username = StringField('Username', render_kw={'readonly':True})
+    plain_password = StringField('Password', [DataRequired(), Length(min=6,max=16)])
+    group_id = SelectField('Paket Internet', [DataRequired()], coerce=int)
+    site_id = SelectField('Admin User', [DataRequired()], coerce=int)
+    is_autorenew = BooleanField('Autorenew this username')

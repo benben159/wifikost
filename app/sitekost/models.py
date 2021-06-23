@@ -29,6 +29,7 @@ class WifiUser(db.Model, ModelMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), nullable=False)
+    ## FIXME please use something other than Cleartext-Password :'(
     plain_password = db.Column(db.String(16), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('wifiusergroup.id'), nullable=False)
     site_id = db.Column(db.Integer, db.ForeignKey('sites.id'), nullable=False)

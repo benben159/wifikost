@@ -14,7 +14,7 @@
 		    <td>Bandwidth (Mbps)</td>
 		    <td>Simultaneous Devices</td>
 		    <td>Autorenew (days)</td>
-                    <td colspan="2">Action</td>
+                    <td >Action</td>
                 </tr>
                 {% for s in pakets %}
                 <tr>
@@ -22,8 +22,7 @@
 		    <td>{{ s.bw_mbps}}</td>
 		    <td>{{ s.num_devices }}</td>
 		    <td>{{ s.renewal_days }}</td>
-		    <td><a href="{{ url_for('sitekost.edit_site',site_id=s.id) }}">Edit</a></td>
-		    <td><a href="{{ url_for('sitekost.toggle_site',site_id=s.id) }}">{% if s.is_active == True %}Disable Site{% else %}Enable Site{% endif %}</a></td>
+		    <td><a href="{{ url_for('sitekost.edit_paketinet',pak_id=s.id) }}">Edit</a></td>
                 </tr>
                 {% endfor %}
 	    </table>
