@@ -12,14 +12,14 @@
                 <tr>
                     <td>Username</td>
                     <td>Is Superadmin</td>
-                    <td colspan="2">&nbsp;</td>
+                    <td colspan="2">Action</td>
                 </tr>
                 {% for u in users %}
                 <tr>
                     <td>{{ u.username }}</td>
 		    <td>{% if u.is_superadmin == True %}Yes{% else %}No{% endif %}</td>
-                    <td><a href="#">Edit</a></td>
-                    <td><a href="#">Hapus</a></td>
+		    <td><a href="{{ url_for('auth.edit_user', user_id=u.id) }}">Edit</a></td>
+		    <td><a href="{{ url_for('auth.toggle_user', user_id=u.id) }}">{% if u.is_active == True %}Disable User{% else %}Enable User{% endif %}</a></td>
                 </tr>
                 {% endfor %}
 	    </table>
