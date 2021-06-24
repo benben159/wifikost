@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, ValidationError, SelectField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, ValidationError, SelectField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, IPAddress, Optional, Length
 
 from .models import SiteKost, PaketInternet, WifiUser
@@ -52,8 +52,9 @@ class WifiUserForm(FlaskForm):
     username = StringField('Username', [DataRequired()])
     plain_password = StringField('Password', [DataRequired(), Length(min=6,max=16)])
     group_id = SelectField('Paket Internet', [DataRequired()], coerce=int)
-    site_id = SelectField('Admin User', [DataRequired()], coerce=int)
+    site_id = SelectField('Site', [DataRequired()], coerce=int)
     is_autorenew = BooleanField('Autorenew this username')
+    submit = SubmitField('Simpan User hotspot')
 
     def validate_username(form, field):
         if WifiUser.query.filter_by(username=field.data).first() is not None:
@@ -63,5 +64,6 @@ class WifiUserEditForm(FlaskForm):
     username = StringField('Username', render_kw={'readonly':True})
     plain_password = StringField('Password', [DataRequired(), Length(min=6,max=16)])
     group_id = SelectField('Paket Internet', [DataRequired()], coerce=int)
-    site_id = SelectField('Admin User', [DataRequired()], coerce=int)
+    site_id = SelectField('Site', [DataRequired()], coerce=int)
     is_autorenew = BooleanField('Autorenew this username')
+    submit = SubmitField('Simpan User hotspot')

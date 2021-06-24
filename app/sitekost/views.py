@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, url_for, redirect, flash, request, abort, session
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 
 from .. import db
 from .models import SiteKost, PaketInternet, WifiUser
 from ..auth.models import User
-from .forms import SiteKostForm, PaketInternetForm, SiteKostEditForm, PaketInternetEditForm
+from .forms import SiteKostForm, PaketInternetForm, SiteKostEditForm, PaketInternetEditForm, WifiUserForm, WifiUserEditForm
 
 sitekost_blueprint = Blueprint('sitekost', __name__)
 
@@ -113,8 +113,47 @@ def toggle_paketinet(pak_id):
     pak.save()
     return redirect(url_for('sitekost.list_pakets'))
 
+### WIFI USER ###
+
 @sitekost_blueprint.route('/hslogins')
 @login_required
 def list_hslogins():
-    wus = WifiUser.query.all()
-    return render_template('wifiuser/manage.html', user=wus)
+    wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, SiteKost.location_id, PaketInternet.name).all()
+    return render_template('wifiuser/manage.html', users=wus)
+
+@sitekost_blueprint.route('/hslogins/add', methods=['GET', 'POST'])
+@login_required
+def add_hslogin():
+    form = WifiUserForm(request.form)
+    pak = PaketInternet.query.all()
+    form.group_id.choices = [(p.id, p.name) for p in pak]
+    sit = SiteKost.query.filter_by(is_active=True, user_id=int(current_user.get_id())).all()
+    form.site_id.choices = [(s.id, s.location_id) for s in sit]
+    if form.validate_on_submit():
+        wus = WifiUser(username=form.username.data, plain_password=form.plain_password.data, is_autorenew=form.is_autorenew.data, group_id=form.group_id.data, site_id=form.site_id.data)
+        wus.save()
+        return redirect(url_for('sitekost.list_hslogins'))
+    elif form.is_submitted():
+        flash('The given data was invalid.', 'danger')
+    return render_template('wifiuser/create.html', form=form)
+
+@sitekost_blueprint.route('/hslogins/edit/<int:wus_id>', methods=['GET', 'POST'])
+@login_required
+def edit_hslogin(wus_id):
+    wus = WifiUser.query.filter_by(id=wus_id).first()
+    form = WifiUserEditForm(obj=wus)
+    if form.validate_on_submit():
+        wus.plain_password = form.plain_password.data
+        wus.site_id = form.site_id.data
+        wus.group_id = form.group_id.data
+        wus.is_autorenew = form.is_autorenew.data
+        wus.save()
+        return redirect(url_for('sitekost.list_hslogins'))
+    elif form.is_submitted():
+        flash('The given data was invalid.', 'danger')
+    return render_template('wifiuser/edit.html', form=form, wus_id=wus.id)
+
+@sitekost_blueprint.route('/hslogins/toggle/<int:wus_id>', methods=['GET', 'POST'])
+@login_required
+def toggle_hslogin(wus_id):
+    return render_template('wifiuser/manage.html')
