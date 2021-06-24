@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card w-50 mx-auto">
+    <div class="card-header">
+      <h4 class="card-title">Manage Hotspot Login</h4>
+    </div>
+    <div class="card-body">
+	    <p><a href="{{ url_for('sitekost.add_hslogin') }}">Add Hotspot Login</a></p>
+            <table id="tblku" class="table table-bordered table-hover">
+                <tr>
+                    <td>Userame</td>
+		    <td>Paket Internet</td>
+		    <td>Site</td>
+		    <td>Autorenew</td>
+		    <td>Created At</td>
+                    <td colspan=2>Action</td>
+                </tr>
+                {% for s in users %}
+                <tr>
+                    <td>{{ s.username }}</td>
+		    <td>{{ s.name }}</td>
+		    <td>{{ s.location_id }}</td>
+		    <td>{% if s.is_autorenew == True %}Yes{%else%}No{%endif%}</td>
+		    <td>{{ s.created_date }}</td>
+		    <td><a href="{{ url_for('sitekost.edit_hslogin',wus_id=s.id) }}">Edit</a></td>
+		    <td><a href="{{ url_for('sitekost.toggle_hslogin',wus_id=s.id) }}">{% if s.is_active == True %}Disable User{%else%}Enable User{%endif%}</a></td>
+                </tr>
+                {% endfor %}
+	    </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
