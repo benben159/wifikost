@@ -32,6 +32,7 @@ class SiteKostEditForm(FlaskForm):
 
 class PaketInternetForm(FlaskForm):
     name = StringField('Nama Paket', [DataRequired()])
+    user_id = SelectField('Admin User', [DataRequired()], coerce=int)
     bw_mbps = IntegerField('Bandwidth (Mbps)', [DataRequired()])
     num_devices = IntegerField('Simultaneous Devices', [DataRequired()])
     renewal_days = IntegerField('Autorenew (days)', [DataRequired()])
@@ -43,6 +44,7 @@ class PaketInternetForm(FlaskForm):
 
 class PaketInternetEditForm(FlaskForm):
     name = StringField('Nama Paket',  render_kw={'readonly':True})
+    user_id = SelectField('Admin User', [DataRequired()], coerce=int)
     bw_mbps = IntegerField('Bandwidth (Mbps)', [DataRequired()])
     num_devices = IntegerField('Simultaneous Devices', [DataRequired()])
     renewal_days = IntegerField('Autorenew (days)', [DataRequired()])

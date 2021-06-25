@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="card w-50 mx-auto">
+  <div class="card mx-auto">
     <div class="card-header">
       <h4 class="card-title">Manage Users</h4>
     </div>
@@ -11,15 +11,16 @@
             <table id="tblku" class="table table-bordered table-hover">
                 <tr>
                     <td>Username</td>
-                    <td>Is Superadmin</td>
-                    <td colspan="2">Action</td>
+                    <td>Superadmin</td>
+		    <td>Active</td>
+                    <td>Action</td>
                 </tr>
                 {% for u in users %}
                 <tr>
                     <td>{{ u.username }}</td>
 		    <td>{% if u.is_superadmin == True %}Yes{% else %}No{% endif %}</td>
+		    <td><a href="{{ url_for('auth.toggle_user', user_id=u.id) }}">{% if u.is_active == True %}Yes{% else %}No{% endif %}</a></td>
 		    <td><a href="{{ url_for('auth.edit_user', user_id=u.id) }}">Edit</a></td>
-		    <td><a href="{{ url_for('auth.toggle_user', user_id=u.id) }}">{% if u.is_active == True %}Disable User{% else %}Enable User{% endif %}</a></td>
                 </tr>
                 {% endfor %}
 	    </table>

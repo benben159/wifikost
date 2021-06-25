@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="card w-50 mx-auto">
+  <div class="card  mx-auto">
     <div class="card-header">
       <h4 class="card-title">Manage Paket Inets</h4>
     </div>
@@ -11,6 +11,7 @@
             <table id="tblku" class="table table-bordered table-hover">
                 <tr>
                     <td>Name</td>
+		    <td>Admin by</td>
 		    <td>Bandwidth (Mbps)</td>
 		    <td>Simultaneous Devices</td>
 		    <td>Autorenew (days)</td>
@@ -19,6 +20,7 @@
                 {% for s in pakets %}
                 <tr>
                     <td>{{ s.name }}</td>
+		    <td>{{ s.username }}</td>
 		    <td>{{ s.bw_mbps}}</td>
 		    <td>{{ s.num_devices }}</td>
 		    <td>{{ s.renewal_days }}</td>

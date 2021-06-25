@@ -19,6 +19,7 @@ class PaketInternet(db.Model, ModelMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     bw_mbps = db.Column(db.Integer, nullable=False)
     num_devices = db.Column(db.Integer, nullable=False)
     renewal_days = db.Column(db.Integer, nullable=False)

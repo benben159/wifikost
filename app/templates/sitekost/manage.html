@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="card w-50 mx-auto">
+  <div class="card mx-auto">
     <div class="card-header">
       <h4 class="card-title">Manage Sites</h4>
     </div>
@@ -14,7 +14,8 @@
 		    <td>RADIUS NAS Address</td>
 		    <td>RADIUS Secret</td>
                     <td>Admin by</td>
-                    <td colspan="2">Action</td>
+                    <td>Active</td>
+                    <td>Action</td>
                 </tr>
                 {% for s in sites %}
                 <tr>
@@ -22,8 +23,8 @@
 		    <td>{{ s.nas_ipaddress }}</td>
 		    <td>{{ s.nas_secret }}</td>
 		    <td>{{ s.username }}</td>
+		    <td><a href="{{ url_for('sitekost.toggle_site',site_id=s.id) }}">{% if s.is_active == True %}Yes{% else %}No{% endif %}</a></td>
 		    <td><a href="{{ url_for('sitekost.edit_site',site_id=s.id) }}">Edit</a></td>
-		    <td><a href="{{ url_for('sitekost.toggle_site',site_id=s.id) }}">{% if s.is_active == True %}Disable Site{% else %}Enable Site{% endif %}</a></td>
                 </tr>
                 {% endfor %}
 	    </table>
