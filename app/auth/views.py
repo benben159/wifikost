@@ -31,7 +31,7 @@ def login():
         if user is not None:
             login_user(user)
             session['is_superadmin'] = user.is_superadmin
-            session['login_uid'] = user.id
+            #session['login_uid'] = user.id ### can use flask-Login's current_user.get_id()
             flash('Login successful.', 'success')
             return redirect(url_for('main.index'))
         flash('Wrong user ID or password, or your login is deactivated', 'danger')
@@ -50,7 +50,7 @@ def logout():
 def list_users():
     if (session['is_superadmin'] != True):
         abort(403)
-    l_user = User.query.all()
+    l_user = User.query.order_by(db.asc(User.id)).all()
     return render_template('auth/manage.html', users=l_user)
 
 @auth_blueprint.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
