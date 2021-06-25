@@ -1,0 +1,8 @@
+this app requires python library packages to be installed:
+
+* py37-Flask
+* py37-python-dotenv
+* py37-flask-sqlalchemy
+* py37-Flask-Login
+* py37-Flask-WTF
+* py37-pg8000-112
