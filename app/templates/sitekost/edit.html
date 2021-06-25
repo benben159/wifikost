@@ -8,6 +8,7 @@
     </div>
     <div class="card-body">
       <form class="form" role="form" action="{{ url_for('sitekost.edit_site', site_id=site_id) }}" method="post">
+     {{ form.hidden_tag() }}
         <div class="form-group">
           {{form.location_id.label}}
           {{form.location_id(class='form-control')}}
