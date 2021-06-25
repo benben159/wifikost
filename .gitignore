@@ -5,3 +5,6 @@ venv/
 # ignore files
 .env
 *.pyc
+
+# vim tmp files
+*.sw[po]
