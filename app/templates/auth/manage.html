@@ -12,6 +12,7 @@
                 <tr>
                     <td>Username</td>
                     <td>Superadmin</td>
+		    <td>Created Date</td>
 		    <td>Active</td>
                     <td>Action</td>
                 </tr>
@@ -19,6 +20,7 @@
                 <tr>
                     <td>{{ u.username }}</td>
 		    <td>{% if u.is_superadmin == True %}Yes{% else %}No{% endif %}</td>
+		    <td>{{ u.created_at }}</td>
 		    <td><a href="{{ url_for('auth.toggle_user', user_id=u.id) }}">{% if u.is_active == True %}Yes{% else %}No{% endif %}</a></td>
 		    <td><a href="{{ url_for('auth.edit_user', user_id=u.id) }}">Edit</a></td>
                 </tr>
