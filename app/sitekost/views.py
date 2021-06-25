@@ -11,19 +11,24 @@ sitekost_blueprint = Blueprint('sitekost', __name__)
 @sitekost_blueprint.route('/sites')
 @login_required
 def list_sites():
+    sit = None
     if (session['is_superadmin'] != True):
-        abort(403)
-    sit = SiteKost.query.join(User, SiteKost.user_id == User.id).add_columns(SiteKost.id, SiteKost.location_id, User.username, SiteKost.nas_ipaddress, SiteKost.nas_secret, SiteKost.is_active).order_by(db.asc(SiteKost.id)).all()
+    #    abort(403)
+        sit = SiteKost.query.join(User, SiteKost.user_id == User.id).add_columns(SiteKost.id, SiteKost.location_id, User.username, SiteKost.nas_ipaddress, SiteKost.nas_secret, SiteKost.is_active).filter(User.id==int(current_user.get_id())).order_by(db.asc(SiteKost.id)).all()
+    else:
+        sit = SiteKost.query.join(User, SiteKost.user_id == User.id).add_columns(SiteKost.id, SiteKost.location_id, User.username, SiteKost.nas_ipaddress, SiteKost.nas_secret, SiteKost.is_active).order_by(db.asc(SiteKost.id)).all()
     return render_template('sitekost/manage.html', sites=sit)
 
 @sitekost_blueprint.route('/sites/add', methods=['GET', 'POST'])
 @login_required
 def add_site():
-    if (session['is_superadmin'] != True):
-        abort(403)
     form = SiteKostForm(request.form)
-    actusr = User.query.filter_by(is_active=True).all()
-    form.user_id.choices=[(u.id, u.username) for u in actusr]
+    if (session['is_superadmin'] != True):
+        actusr = User.query.filter_by(id=int(current_user.get_id())).first()
+        form.user_id.choices=[(actusr.id, actusr.username)]
+    else:
+        actusr = User.query.filter_by(is_active=True).all()
+        form.user_id.choices=[(u.id, u.username) for u in actusr]
     if form.validate_on_submit():
         site = SiteKost(location_id=form.location_id.data, user_id = form.user_id.data, nas_ipaddress = form.nas_ipaddress.data, nas_secret = form.nas_secret.data)
         site.save()
@@ -35,12 +40,14 @@ def add_site():
 @sitekost_blueprint.route('/sites/edit/<int:site_id>', methods=['GET', 'POST'])
 @login_required
 def edit_site(site_id):
-    if (session['is_superadmin'] != True):
-        abort(403)
     sit = SiteKost.query.filter_by(id=site_id).first()
     form = SiteKostEditForm(obj=sit)
-    actusr = User.query.filter_by(is_active=True).all()
-    form.user_id.choices=[(u.id, u.username) for u in actusr]
+    if (session['is_superadmin'] != True):
+        actusr = User.query.filter_by(id=int(current_user.get_id())).first()
+        form.user_id.choices=[(actusr.id, actusr.username)]
+    else:
+        actusr = User.query.filter_by(is_active=True).all()
+        form.user_id.choices=[(u.id, u.username) for u in actusr]
     if form.validate_on_submit():
         sit.location_id = form.location_id.data
         sit.nas_ipaddress = form.nas_ipaddress.data
@@ -55,8 +62,8 @@ def edit_site(site_id):
 @sitekost_blueprint.route('/sites/toggle/<int:site_id>', methods=['GET', 'POST'])
 @login_required
 def toggle_site(site_id):
-    if (session['is_superadmin'] != True):
-        abort(403)
+#    if (session['is_superadmin'] != True):
+#        abort(403)
     sit = SiteKost.query.filter_by(id=site_id).first()
     sit.is_active = not sit.is_active
     sit.save()
@@ -67,19 +74,23 @@ def toggle_site(site_id):
 @sitekost_blueprint.route('/pakets')
 @login_required
 def list_pakets():
+    pak=None
     if (session['is_superadmin'] != True):
-        abort(403)
-    pak = PaketInternet.query.join(User, PaketInternet.user_id == User.id).add_columns(PaketInternet.id, PaketInternet.name, User.username, PaketInternet.bw_mbps, PaketInternet.num_devices, PaketInternet.renewal_days).order_by(db.asc(PaketInternet.id)).all()
+        pak = PaketInternet.query.join(User, PaketInternet.user_id == User.id).add_columns(PaketInternet.id, PaketInternet.name, User.username, PaketInternet.bw_mbps, PaketInternet.num_devices, PaketInternet.renewal_days).filter(User.id==int(current_user.get_id())).order_by(db.asc(PaketInternet.id)).all()
+    else:
+        pak = PaketInternet.query.join(User, PaketInternet.user_id == User.id).add_columns(PaketInternet.id, PaketInternet.name, User.username, PaketInternet.bw_mbps, PaketInternet.num_devices, PaketInternet.renewal_days).order_by(db.asc(PaketInternet.id)).all()
     return render_template('paketinet/manage.html', pakets=pak)
 
 @sitekost_blueprint.route('/pakets/add', methods=['GET', 'POST'])
 @login_required
 def add_paketinet():
-    if (session['is_superadmin'] != True):
-        abort(403)
     form = PaketInternetForm(request.form)
-    actusr = User.query.filter_by(is_active=True).all()
-    form.user_id.choices=[(u.id, u.username) for u in actusr]
+    if (session['is_superadmin'] != True):
+        actusr = User.query.filter_by(id=int(current_user.get_id())).first()
+        form.user_id.choices=[(actusr.id, actusr.username)]
+    else:
+        actusr = User.query.filter_by(is_active=True).all()
+        form.user_id.choices=[(u.id, u.username) for u in actusr]
     if form.validate_on_submit():
         pak = PaketInternet(name=form.name.data, user_id=form.user_id.data, bw_mbps=form.bw_mbps.data, num_devices = form.num_devices.data, renewal_days=form.renewal_days.data)
         pak.save()
@@ -91,12 +102,14 @@ def add_paketinet():
 @sitekost_blueprint.route('/pakets/edit/<int:pak_id>', methods=['GET', 'POST'])
 @login_required
 def edit_paketinet(pak_id):
-    if (session['is_superadmin'] != True):
-        abort(403)
     pak = PaketInternet.query.filter_by(id=pak_id).first()
     form = PaketInternetEditForm(obj=pak)
-    actusr = User.query.filter_by(is_active=True).all()
-    form.user_id.choices=[(u.id, u.username) for u in actusr]
+    if (session['is_superadmin'] != True):
+        actusr = User.query.filter_by(id=int(current_user.get_id())).first()
+        form.user_id.choices=[(actusr.id, actusr.username)]
+    else:
+        actusr = User.query.filter_by(is_active=True).all()
+        form.user_id.choices=[(u.id, u.username) for u in actusr]
     if form.validate_on_submit():
         pak.user_id = form.user_id.data
         pak.bw_mbps = form.bw_mbps.data
@@ -111,8 +124,8 @@ def edit_paketinet(pak_id):
 @sitekost_blueprint.route('/pakets/toggle/<int:pak_id>', methods=['GET', 'POST'])
 @login_required
 def toggle_paketinet(pak_id):
-    if (session['is_superadmin'] != True):
-        abort(403)
+#    if (session['is_superadmin'] != True):
+#        abort(403)
     pak = PaketInternet.query.filter_by(id=pak_id).first()
     pak.is_active = not pak.is_active
     pak.save()
@@ -123,16 +136,25 @@ def toggle_paketinet(pak_id):
 @sitekost_blueprint.route('/hslogins')
 @login_required
 def list_hslogins():
-    wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, SiteKost.location_id, PaketInternet.name).order_by(db.asc(WifiUser.id)).all()
+    wus = None
+    if (session['is_superadmin'] != True):
+        wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, SiteKost.location_id, PaketInternet.name).filter(SiteKost.user_id==int(current_user.get_id())).order_by(db.asc(WifiUser.id)).all()
+    else:
+        wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, SiteKost.location_id, PaketInternet.name).order_by(db.asc(WifiUser.id)).all()
     return render_template('wifiuser/manage.html', users=wus)
 
 @sitekost_blueprint.route('/hslogins/add', methods=['GET', 'POST'])
 @login_required
 def add_hslogin():
     form = WifiUserForm(request.form)
-    pak = PaketInternet.query.all()
+    pak, sit = None, None
+    if (session['is_superadmin'] != True):
+        pak = PaketInternet.query.filter_by(user_id=int(current_user.get_id())).all()
+        sit = SiteKost.query.filter_by(is_active=True, user_id=int(current_user.get_id())).all()
+    else:
+        pak = PaketInternet.query.all()
+        sit = SiteKost.query.filter_by(is_active=True)
     form.group_id.choices = [(p.id, p.name) for p in pak]
-    sit = SiteKost.query.filter_by(is_active=True, user_id=int(current_user.get_id())).all()
     form.site_id.choices = [(s.id, s.location_id) for s in sit]
     if form.validate_on_submit():
         wus = WifiUser(username=form.username.data, plain_password=form.plain_password.data, is_autorenew=form.is_autorenew.data, group_id=form.group_id.data, site_id=form.site_id.data)
@@ -147,6 +169,15 @@ def add_hslogin():
 def edit_hslogin(wus_id):
     wus = WifiUser.query.filter_by(id=wus_id).first()
     form = WifiUserEditForm(obj=wus)
+    pak, sit = None, None
+    if (session['is_superadmin'] != True):
+        pak = PaketInternet.query.filter_by(user_id=int(current_user.get_id())).all()
+        sit = SiteKost.query.filter_by(is_active=True, user_id=int(current_user.get_id())).all()
+    else:
+        pak = PaketInternet.query.all()
+        sit = SiteKost.query.filter_by(is_active=True)
+    form.group_id.choices = [(p.id, p.name) for p in pak]
+    form.site_id.choices = [(s.id, s.location_id) for s in sit]
     if form.validate_on_submit():
         wus.plain_password = form.plain_password.data
         wus.site_id = form.site_id.data
@@ -161,4 +192,7 @@ def edit_hslogin(wus_id):
 @sitekost_blueprint.route('/hslogins/toggle/<int:wus_id>', methods=['GET', 'POST'])
 @login_required
 def toggle_hslogin(wus_id):
+    wus = WifiUser.query.filter_by(id=wus_id).first()
+    wus.is_active = not wus.is_active
+    wus.save()
     return render_template('wifiuser/manage.html')

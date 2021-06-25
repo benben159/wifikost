@@ -26,9 +26,6 @@ class SiteKostEditForm(FlaskForm):
     nas_secret = StringField('NAS Secret', [Optional(), Length(min=5,max=31)])
     submit = SubmitField('Save Site')
 
-    def validate_nas_ipaddress(form, field):
-        if SiteKost.query.filter_by(nas_ipaddress=field.data).first() is not None:
-            raise ValidationError('This IP Address is already registered to a location')
 
 class PaketInternetForm(FlaskForm):
     name = StringField('Nama Paket', [DataRequired()])
