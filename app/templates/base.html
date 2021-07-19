@@ -28,13 +28,16 @@
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+	          <div class="dropdown-divider"></div>
         <div class="collapse navbar-collapse" id="navbarNav">
           <!-- Main Navigation -->
           <ul class="navbar-nav">
             {% if current_user.is_authenticated %}
+	    {% if session['is_superuser'] == True %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.list_users') }}">Manage Users</a>
             </li>
+	    {%endif%}
             <li class="nav-item">
 		    <a class="nav-link" href="{{ url_for('sitekost.list_sites') }}">Manage Sites</a>
             </li>
