@@ -138,9 +138,9 @@ def toggle_paketinet(pak_id):
 def list_hslogins():
     wus = None
     if (session['is_superadmin'] != True):
-        wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, SiteKost.location_id, PaketInternet.name).filter(SiteKost.user_id==int(current_user.get_id())).order_by(db.asc(WifiUser.id)).all()
+        wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, WifiUser.is_active, SiteKost.location_id, PaketInternet.name).filter(SiteKost.user_id==int(current_user.get_id())).order_by(db.asc(WifiUser.id)).all()
     else:
-        wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, SiteKost.location_id, PaketInternet.name).order_by(db.asc(WifiUser.id)).all()
+        wus = WifiUser.query.join(SiteKost, WifiUser.site_id == SiteKost.id).join(PaketInternet, WifiUser.group_id == PaketInternet.id).add_columns(WifiUser.id, WifiUser.username, WifiUser.created_date, WifiUser.is_autorenew, WifiUser.is_active, SiteKost.location_id, PaketInternet.name).order_by(db.asc(WifiUser.id)).all()
     return render_template('wifiuser/manage.html', users=wus)
 
 @sitekost_blueprint.route('/hslogins/add', methods=['GET', 'POST'])
@@ -196,4 +196,4 @@ def toggle_hslogin(wus_id):
     wus = WifiUser.query.filter_by(id=wus_id).first()
     wus.is_active = not wus.is_active
     wus.save()
-    return render_template('wifiuser/manage.html')
+    return redirect(url_for('sitekost.list_hslogins'))
