@@ -172,7 +172,8 @@ def edit_hslogin(wus_id):
     form = WifiUserEditForm(obj=wus)
     pak, sit = None, None
     if (session['is_superadmin'] != True):
-        pak = PaketInternet.query.filter_by(user_id=int(current_user.get_id())).all()
+        ## assume superadmin is always user with id 1
+        pak = PaketInternet.query.filter(db.or_(PaketInternet.user_id==int(current_user.get_id()),PaketInternet.user_id==1)).all()
         sit = SiteKost.query.filter_by(is_active=True, user_id=int(current_user.get_id())).all()
     else:
         pak = PaketInternet.query.all()

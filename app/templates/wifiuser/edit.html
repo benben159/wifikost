@@ -4,36 +4,43 @@
 <div class="container py-4">
   <div class="card w-50 mx-auto">
     <div class="card-header">
-      <h4 class="card-title">Edit Paket Inet</h4>
+      <h4 class="card-title">Add Hotspot Login</h4>
     </div>
     <div class="card-body">
       <form class="form" role="form" action="{{ url_for('sitekost.edit_hslogin', wus_id=wus_id) }}" method="post">
       {{ form.hidden_tag() }}
         <div class="form-group">
-          {{form.name.label}}
-          {{form.name(class='form-control')}}
-          {% for error in form.errors.name %}
+          {{form.username.label}}
+          {{form.username(class='form-control')}}
+          {% for error in form.errors.username %}
           <small class="text-danger">{{error}}</small>
           {% endfor %}
         </div>
         <div class="form-group">
-          {{form.bw_mbps.label}}
-          {{form.bw_mbps(class='form-control')}}
-          {% for error in form.errors.bw_mbps %}
+          {{form.plain_password.label}}
+          {{form.plain_password(class='form-control')}}
+          {% for error in form.errors.plain_password %}
           <small class="text-danger">{{error}}</small>
           {% endfor %}
         </div>
         <div class="form-group">
-          {{form.num_devices.label}}
-          {{form.num_devices(class='form-control')}}
-          {% for error in form.errors.num_devices %}
+          {{form.site_id.label}}
+          {{form.site_id(class='form-control')}}
+          {% for error in form.errors.site_id %}
           <small class="text-danger">{{error}}</small>
           {% endfor %}
         </div>
         <div class="form-group">
-          {{form.renewal_days.label}}
-          {{form.renewal_days(class='form-control')}}
-          {% for error in form.errors.renewal_days %}
+          {{form.group_id.label}}
+          {{form.group_id(class='form-control')}}
+          {% for error in form.errors.group_id %}
+          <small class="text-danger">{{error}}</small>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{form.is_autorenew.label}}
+          {{form.is_autorenew(class='form-control')}}
+          {% for error in form.errors.is_autorenew %}
           <small class="text-danger">{{error}}</small>
           {% endfor %}
         </div>
