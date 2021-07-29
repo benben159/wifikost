@@ -5,6 +5,9 @@ from sqlalchemy.sql import func, expression
 class SiteKost(db.Model, ModelMixin):
 
     __tablename__ = 'sites'
+    __table_args__ = (
+        db.UniqueConstraint('location_id', 'nas_ipaddress', name='location_id_to_ipaddress'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.String(64), nullable=False)
@@ -27,6 +30,9 @@ class PaketInternet(db.Model, ModelMixin):
 class WifiUser(db.Model, ModelMixin):
 
     __tablename__ = 'wifiuser'
+    __table_args__ = (
+        db.UniqueConstraint('username', 'site_id', name='username_to_site_id'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), nullable=False)
